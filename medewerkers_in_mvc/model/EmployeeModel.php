@@ -67,19 +67,73 @@ function getEmployee($id){
     return $result;
  }
 
-function createEmployee($data){
+ function createEmployee($naam, $leeftijd){
     // Maak hier de code om een medewerker toe te voegen
+    try {
+        // Open de verbinding met de database
+        $conn=openDatabaseConnection();
 
+        $sql = "INSERT INTO `employees` (name, age) VALUES (:name, :age)";
+        $query = $conn->prepare($sql);
+
+            $query->bindParam("name", $_POST['naam']);
+            $query->bindParam("age", $_POST['leeftijd']);
+            $query->execute();
+        }
+    // Vang de foutmelding af
+    catch(PDOException $e){
+        // Zet de foutmelding op het scherm
+        echo "Connection failed: " . $e->getMessage();
+    }
  }
 
-
- function updateEmployee($data){
+ function updateEmployee($naam, $leeftijd){
     // Maak hier de code om een medewerker te bewerken
+  try {
+       // Open de verbinding met de database
+       $conn=openDatabaseConnection();
+
+       $id = $_POST['id'];
+
+       $sql = 'SELECT * from `employees` WHERE id = :id';
+       $query = $conn->prepare($sql);
+       $query->bindParam(":id", $id);
+       $query->execute();
+
+       $result = $query->fetch();
+
+       $sql = "UPDATE `employees` SET name = :name, age = :age where id = :id";
+       $query = $conn->prepare($sql);
+
+        $query->bindParam("name", $_POST['naam']);
+        $query->bindParam("age", $_POST['leeftijd']);
+        $query->bindParam(":id", $id);
+        $query->execute();
+      }
+   // Vang de foutmelding af
+   catch(PDOException $e){
+       // Zet de foutmelding op het scherm
+       echo "Connection failed: " . $e->getMessage();
+   }
  }
 
  function deleteEmployee($id){
     // Maak hier de code om een medewerker te verwijderen
+   try {
+       // Open de verbinding met de database
+       $conn=openDatabaseConnection();
+
+       $id = $_POST['id'];
+
+       $sql = 'DELETE FROM `employees` WHERE id = :id';
+       $query = $conn->prepare($sql);
+       $query->bindParam(":id", $id);
+       $query->execute();
+      }
+   // Vang de foutmelding af
+   catch(PDOException $e){
+       // Zet de foutmelding op het scherm
+       echo "Connection failed: " . $e->getMessage();
+   }
  }
-
-
 ?>
